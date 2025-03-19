@@ -3,10 +3,19 @@
 # ----------------------- #
 
 library(tidyverse)
+library(openxlsx)
 
 # Set parameters
-random_seed <- 38
-season <- 2024
+season <- 2025    
+bracket_id <- 100   # choose number from 0 to 999
+
+# Determine random seed based on season and bracket ID 
+convert_float_to_int <- function(x){
+  raw_bytes <- writeBin(x, raw(), size = 4)  
+  int_value <- readBin(raw_bytes, "integer", size = 4, endian = .Platform$endian)
+  int_value
+}
+random_seed <- convert_float_to_int(season + bracket_id / 1000)
 
 # Set random seed
 set.seed(random_seed)
@@ -80,7 +89,11 @@ bracket <- map_dfr(c("East", "West", "South", "Midwest"), sim_div)
 filter(bracket, round == "Elite 8")
 
 # Save bracket to file
-path <- paste0("brackets/bracket_", season, "_seed_", random_seed, ".csv")
-write_csv(bracket, path)
+path <- paste0("brackets/bracket_", 
+               season, "-", str_pad(bracket_id, 3, "left", 0), 
+               "_seed_", random_seed, 
+               ".xlsx")
+
+write.xlsx(bracket, path, zoom = 200, headerStyle = createStyle(textDecoration = "Bold"))
 
 
