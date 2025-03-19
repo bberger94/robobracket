@@ -1,8 +1,9 @@
 # ----------------------- #
-# Randomly choose bracket 
+# Randomly generate bracket 
 # ----------------------- #
-
-library(tidyverse)
+library(dplyr)
+library(purrr)
+library(stringr)
 library(openxlsx)
 
 # Load parameters from file
