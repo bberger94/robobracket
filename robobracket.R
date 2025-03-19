@@ -5,9 +5,12 @@
 library(tidyverse)
 library(openxlsx)
 
-# Set parameters
-season <- 2025    
-bracket_id <- 100   # choose number from 0 to 999
+# Load parameters from file
+source("parameters.R")
+
+# If parameters not set, use defaults
+if(!exists("season")) season <- lubridate::year(today())
+if(!exists("bracket_id")) bracket_id <- 0
 
 # Determine random seed based on season and bracket ID 
 convert_float_to_int <- function(x){
@@ -94,6 +97,7 @@ path <- paste0("brackets/bracket_",
                "_seed_", random_seed, 
                ".xlsx")
 
+print(paste("Saving", path))
 write.xlsx(bracket, path, zoom = 200, headerStyle = createStyle(textDecoration = "Bold"))
 
 
